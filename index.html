@@ -1,0 +1,301 @@
+<!doctype html>
+<html lang=EN-us>
+
+<head>
+    <meta charset=utf-8>
+    <meta content="text/html; charset=utf-8" http-equiv=Content-Type>
+    <title>Rotating Cube 3D</title>
+    <meta content="Rotating Cube 3d" name=title>
+    <meta content="New raylib web videogame, developed using raylib videogames library" name=description>
+    <meta content="raylib, programming, examples, html5, C, C++, library, learn, games, videogames" name=keywords>
+    <meta content="width=device-width" name=viewport>
+    <meta content=website property=og:type>
+    <meta content="Rotating Cube 3d" property=og:title>
+    <meta content=image/png property=og:image:type>
+    <meta content="New raylib web videogame, developed using raylib videogames library" property=og:image:alt>
+    <meta content=https://github.com/abhikumar45444/BREAKOUT/blob/main/Breakout.png property=og:image>
+    <meta content="Breakout Developed in C++ using Raylib" property=og:site_name>
+    <meta content=https://www.raylib.com/games.html property=og:url>
+    <meta content="New raylib web videogame, developed using raylib videogames library" property=og:description>
+    <meta content=summary_large_image name=twitter:card>
+    <meta content=@raysan5 name=twitter:site>
+    <meta content="Rotating Cube 3d" name=twitter:title>
+    <meta content=https://www.raylib.com/common/raylib_logo.png name=twitter:image>
+    <meta content="New raylib web videogame, developed using raylib videogames library" name=twitter:image:alt>
+    <meta content=https://www.raylib.com/games.html name=twitter:url>
+    <meta content="New raylib web videogame, developed using raylib videogames library" name=twitter:description>
+    <!-- <link href=https://www.raylib.com/favicon.ico rel="shortcut icon"> -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Press+Start+2P&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap" rel="stylesheet">
+    <link rel="apple-touch-icon" sizes="180x180" href="./resources/icons/apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="./resources/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="./resources/icons/favicon-16x16.png">
+    <link rel="manifest" href="./resources/icons/site.webmanifest">
+    <style>
+        body {
+            font-family: arial;
+            margin: 0;
+            padding: none;
+            background-color : rgb(14, 14, 14);
+        }
+
+        #header {
+            width: 100%;
+            /* height: 60px; */
+            /* background-color: #888 */
+        }
+
+        #logo {
+            width: 64px;
+            height: 64px;
+            float: left;
+            position: relative;
+            margin: 10px;
+            background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAadEVYdFNvZnR3YXJlAFBhaW50Lk5FVCB2My41LjExR/NCNwAAA7JJREFUaEPtk0FyWzEMQ+37X7fZhxX4YY3AD1OKF1nkzTRlSBCCLeVBnvl/AUdaELOunPno1kts1kixdtEZKVs+xIxebBkZsVknn/L5nFGDLR8T4zVC9fX19S/+tTFijrYK4jUjbPUtqBHpnEE6PkZD7jQZV8n5Recw1XQKciZuPaEtR6UjNs5ENVGMsBVqpPtER0ZMOhpyp8m4YL4OjD9yxsyZxnQycfMJETNSzsRE1+dihK3YMiJmpHTW3xpmXPC6BXlCHfqnBlsjY5hxf/6EVEOM2BTEi0fYCX4ONSI6Kq3Blg/prIOMq2CsRur4KQ0x64SdjOufEDEdHZGOhmz5RDHCVqhRuQ86YsVskbc+GXchLiHnFyYH+UigQDVGnImbT8hwFkgLg2qiM8JO6Ylx1FNLa3DmYwqCTsZd4BPqGJG7MwKzpeiWKTKxXkLMVE3MSOmsdwxLH6Rd/wCCLSNDx6djeKfJuArGeoYamRHpaEjnCBYZVy8hZqo2GI36qPjsiOiMsBXGcev4Mx9TLGTchbgEjN/uz6jGrBvDjg+LTNx8Qp2CbG2xMKgmOiPslJ4Yxx+eSnSkzlosZNwFPiHl7FRTkLNRJm4+IeVM0ymIH42wE/wcKalQI4MRl4EW3p6VcRWMua8F6WjIlqZDxvVPiHQ6CjVbYkV9ohhhp/Rk1wiYgpyJ78i4CsZbjkb8Qx+ihvzu3RPaKogZkY6GlEeMsKdPSOFIC8VoOusg44L5c+T8ouOoGhWbdWJ8tMi4egkxo4hoh2yNTGf3iIyr5Lyic4bRENXo+lvDjAt4C1Hk/OKtUaAj0+n4dMSZ2D+hrYJsaYh2SClG2jV9kJKKzhlGQ1SsW299Mq6C8dYZHTExo8fzieI5ivipYnYy7nwJqGKmOYyRwfiUBXITfh5qSHRGWEkfqJqURgvsdHyWYv7Ko8DnYYegk3EB00cxprdrJRzFd7YQzawu8L1GMTYS/KpPaAFTkIn1EmJmspJSs5xBzSyGhlkBmlxfNFiP5mw4wlbMh4F5Ddxp5jNINBdCEz9zPOC1zD7Q0HBdmXndwv0TMtydEdzlWJT4VZ8Qt9Qn4/onxMIwa5ZYGJU5yufBiCjwE50AGjLCVuS8Yt4H7OgZLKK5EKOsLviEWJSL/+0uMi7gLUSBseYwqEbXvSHCec1CJvZPyHCmYQffaBBfOTCGHM2aEbZi1+gO1XTWVXMnzrhAn5DSOZVsiQlHnSITKzGj6DeTcZWc/3oy7h9//PF4PL4BlvsWrb6RE+oAAAAASUVORK5CYII=')
+        }
+
+        .emscripten {
+            padding-right: 0;
+            
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            width: fit-content;
+            margin-top: 10px;
+        }
+
+        div.emscripten {
+            text-align: center
+        }
+
+        div.emscripten_border {
+
+        }
+
+        canvas.emscripten {
+            border: 0 none;
+            background: #000;
+
+        }
+
+        .spinner {
+            height: 30px;
+            width: 30px;
+            margin: 0;
+            margin-top: 20px;
+            margin-left: 20px;
+            display: inline-block;
+            vertical-align: top;
+            -webkit-animation: rotation .8s linear infinite;
+            -moz-animation: rotation .8s linear infinite;
+            -o-animation: rotation .8s linear infinite;
+            animation: rotation .8s linear infinite;
+            border-left: 5px solid #000;
+            border-right: 5px solid #000;
+            border-bottom: 5px solid #000;
+            border-top: 5px solid red;
+            border-radius: 100%;
+            background-color: #f5f5f5
+        }
+
+        @-webkit-keyframes rotation {
+            from {
+                -webkit-transform: rotate(0)
+            }
+            to {
+                -webkit-transform: rotate(360deg)
+            }
+        }
+
+        @-moz-keyframes rotation {
+            from {
+                -moz-transform: rotate(0)
+            }
+            to {
+                -moz-transform: rotate(360deg)
+            }
+        }
+
+        @-o-keyframes rotation {
+            from {
+                -o-transform: rotate(0)
+            }
+            to {
+                -o-transform: rotate(360deg)
+            }
+        }
+
+        @keyframes rotation {
+            from {
+                transform: rotate(0)
+            }
+            to {
+                transform: rotate(360deg)
+            }
+        }
+
+        #status {
+            display: inline-block;
+            vertical-align: top;
+            margin-top: 30px;
+            margin-left: 20px;
+            font-weight: 700;
+            color: #282828;
+            display: none;
+        }
+
+        #progress {
+            height: 0;
+            width: 0
+        }
+
+        #controls {
+            display: inline-block;
+            float: right;
+            vertical-align: top;
+            margin-top: 15px;
+            margin-right: 20px
+        }
+
+        #output {
+            width: 100%;
+            height: 140px;
+            margin: 0 auto;
+            margin-top: 10px;
+            display: block;
+            background-color: #000;
+            color: #25ae26;
+            font-family: 'Lucida Console', Monaco, monospace;
+            outline: 0
+        }
+
+        input[type=button] {
+            background-color: #d3d3d3;
+            border: 4px solid #a9a9a9;
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+            width: 140px;
+            height: 30px;
+            margin-left: 10px
+        }
+
+        input[type=button]:hover {
+            background-color: #f5f5f5ff;
+            border-color: #000
+        }
+
+        #audiotext {
+            font-family: "Montserrat, sans-serif";
+            font-weight: 500;
+            font-style: italic;
+            font-weight: bold;
+            font-size: larger;
+            text-align: center;
+            display: inline-block;
+            padding-top: 1rem;
+            color: rgb(56, 12, 29);
+        }
+    </style>
+</head>
+
+<body>
+    <div id=header>
+        <div class=spinner id=spinner></div>
+        <div class=emscripten id=status>Downloading...</div><span id=controls><span><input onclick=Module.requestFullscreen(!1,!1) type=button value="🖵 FULLSCREEN"></span>
+        <span></span>
+        <div class=emscripten><progress hidden id=progress max=100 value=0></progress>
+        </div>
+    </div>
+    <div class=emscripten_border><canvas class=emscripten id=canvas oncontextmenu=event.preventDefault() tabindex=-1></canvas></div>
+    <script src=https://cdn.jsdelivr.net/gh/eligrey/FileSaver.js/dist/FileSaver.min.js></script>
+    <script>
+        function saveFileFromMEMFSToDisk(e, a) {
+            var i, o = FS.readFile(e);
+            i = new Blob([o.buffer], {
+                type: "application/octet-binary"
+            }), saveAs(i, a)
+        }
+    </script>
+
+    <script type='text/javascript'>
+        var statusElement = document.querySelector('#status');
+        var progressElement = document.querySelector('#progress');
+        var spinnerElement = document.querySelector('#spinner');
+        var Module = {
+            preRun: [],
+            postRun: [],
+            print: (function() {
+                var element = document.querySelector('#output');
+
+                if (element) element.value = '';    // Clear browser cache
+
+                return function(text) {
+                    if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+                    console.log(text);
+
+                    if (element) {
+                        element.value += text + "\n";
+                        element.scrollTop = element.scrollHeight; // focus on bottom
+                    }
+                };
+            })(),
+            printErr: function(text) {
+                if (arguments.length > 1) text = Array.prototype.slice.call(arguments).join(' ');
+
+                console.error(text);
+            },
+            canvas: (function() {
+                var canvas = document.querySelector('#canvas');
+                canvas.addEventListener("webglcontextlost", function(e) { alert('WebGL context lost. You will need to reload the page.'); e.preventDefault(); }, false);
+
+                return canvas;
+            })(),
+            setStatus: function(text) {
+                if (!Module.setStatus.last) Module.setStatus.last = { time: Date.now(), text: '' };
+                if (text === Module.setStatus.last.text) return;
+
+                var m = text.match(/([^(]+)\((\d+(\.\d+)?)\/(\d+)\)/);
+                var now = Date.now();
+
+                if (m && now - Module.setStatus.last.time < 30) return; // If this is a progress update, skip it if too soon
+
+                Module.setStatus.last.time = now;
+                Module.setStatus.last.text = text;
+
+                if (m) {
+                    text = m[1];
+                    progressElement.value = parseInt(m[2])*100;
+                    progressElement.max = parseInt(m[4])*100;
+                    progressElement.hidden = true;
+                    spinnerElement.hidden = false;
+                } else {
+                    progressElement.value = null;
+                    progressElement.max = null;
+                    progressElement.hidden = true;
+                    if (!text) spinnerElement.style.display = 'none';
+                }
+
+                statusElement.innerHTML = text;
+            },
+            totalDependencies: 0,
+            monitorRunDependencies: function(left) {
+                this.totalDependencies = Math.max(this.totalDependencies, left);
+                Module.setStatus(left ? 'Preparing... (' + (this.totalDependencies-left) + '/' + this.totalDependencies + ')' : 'All downloads complete.');
+            },
+            //noInitialRun: true
+        };
+
+        Module.setStatus('Downloading...');
+
+        window.onerror = function() {
+            Module.setStatus('Exception thrown, see JavaScript console');
+            spinnerElement.style.display = 'none';
+            Module.setStatus = function(text) { if (text) Module.printErr('[post-exception status] ' + text); };
+        };
+    </script>
+    <script src="./wasm/index.js" async></script>
+</body>
+
+</html>
