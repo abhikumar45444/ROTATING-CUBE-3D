@@ -1,0 +1,10 @@
+{
+  "files.associations": {
+    "cmath": "cpp",
+    "initializer_list": "cpp",
+    "xutility": "cpp",
+    "tuple": "cpp",
+    "iostream": "cpp",
+    "ostream": "cpp"
+  }
+}
