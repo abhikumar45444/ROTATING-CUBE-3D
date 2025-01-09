@@ -14,9 +14,10 @@ This project visualizes a 3D rotating cube represented by circles at its vertice
 
 
 ## DESCRIPTION
- A player moves the paddle back and forth horizontally to hit and ricochet the ball to cause it to break the bricks on top of the screen.
- If the ball reaches the bottom of the screen it costs one life.
- The bricks are in color of yellow, green, orange, and red from bottom to top.
+- 3D to 2D Projection: Renders a 3D cube on a 2D canvas using simple perspective projection.
+- Dynamic Rotation: Rotates the cube along its X, Y, and Z axes simultaneously.
+- Customizable Design: Vertices are represented as circles, whose size, color, and spacing can be adjusted.
+- Real-Time Animation: Smooth animations give the illusion of continuous rotation.
 
 
 ## SEE CUBE ON WEB
