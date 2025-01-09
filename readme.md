@@ -20,7 +20,7 @@ This project visualizes a 3D rotating cube represented by circles at its vertice
 
 
 ## SEE CUBE ON WEB
-Checkout Game Here: [RotatingCube3d](#).
+Checkout Game Here: [RotatingCube3d](https://abhikumar45444.github.io/ROTATING-CUBE-3D/).
 
 ## (WINDOWS - EXE)
  Run the [RotatingCube3d.exe](./build) file.
