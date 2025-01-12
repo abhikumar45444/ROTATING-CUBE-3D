@@ -2,16 +2,7 @@
 # C:\mingw-64\mingw32\bin\g++
 # For Platform WEB Build Follow emscripten instruction to compile raylib for web and setup then customize the makefile according to your system path.
 DESKTOP:
-	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCube3d.cpp -g -o RotatingCube3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCube3d.exe
-
-DESKTOP-RotatingCubeTriangles3d:
-	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCubeTriangles3d.cpp -g -o RotatingCubeTriangles3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCubeTriangles3d.exe
-
-DESKTOP-RotatingCubeShapes3d:
 	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCubeShapes3d.cpp -g -o RotatingCubeShapes3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCubeShapes3d.exe
-
-DESKTOP-main:
-	C:\mingw-64\mingw32\bin\g++ ../src/main.cpp -g -o main.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && main.exe
 
 WASM:
 	emcc ../wasm/main.cpp -o ../wasm/index.html -O3 -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -Os -I. -I C:/raylib/src -I C:/raylib/src/external -L. -L C:/raylib/src -s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --shell-file ../wasm/shell.html c:/raylib/src/web/libraylib.a -DPLATFORM_WEB -s EXPORTED_FUNCTIONS=["_free","_malloc","_main"] -s EXPORTED_RUNTIME_METHODS=ccall

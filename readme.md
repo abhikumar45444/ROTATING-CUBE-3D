@@ -26,7 +26,7 @@ https://github.com/user-attachments/assets/dff6568d-caf1-4a47-a7dc-a2cb5659393a
 Checkout Game Here: [RotatingCube3d](https://abhikumar45444.github.io/ROTATING-CUBE-3D/).
 
 ## (WINDOWS - EXE)
- Run the [RotatingCube3d.exe](./build) file.
+ Run the [RotatingCubeShapes3d.exe](./build) file.
 
 ## BUILD: If you want to make changes feel free to do so
 ***
