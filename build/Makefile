@@ -4,6 +4,12 @@
 DESKTOP:
 	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCube3d.cpp -g -o RotatingCube3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCube3d.exe
 
+DESKTOP-RotatingCubeTriangles3d:
+	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCubeTriangles3d.cpp -g -o RotatingCubeTriangles3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCubeTriangles3d.exe
+
+DESKTOP-RotatingCubeShapes3d:
+	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCubeShapes3d.cpp -g -o RotatingCubeShapes3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCubeShapes3d.exe
+
 DESKTOP-main:
 	C:\mingw-64\mingw32\bin\g++ ../src/main.cpp -g -o main.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && main.exe
 

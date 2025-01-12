@@ -12,6 +12,8 @@ int height = 800;
 #define RADIUS 10
 Color backgroundColor = {22, 22, 22, 255};
 Color circleColor = {200, 30, 30, 255};
+float innerRadius = 11;
+float outerRadius = 13;
 
 int main()
 {
@@ -40,7 +42,9 @@ int main()
         {
             for (int ix = 0; ix < GRID_COUNT; ix++)
             {
-                int radius = RADIUS;
+                // float radius = RADIUS;
+                float _innerRadius = innerRadius;
+                float _outerRadius = outerRadius;
                 for (int iz = 0; iz < GRID_COUNT; iz++)
                 {
                     unsigned int r = ((iz < 8) && (iy < 8) && (ix < 8)) ? (((ix + 2) * 255) / GRID_COUNT) : ((ix * 255) / GRID_COUNT);
@@ -55,17 +59,17 @@ int main()
                     y = (iy * GRID_PAD - (GRID_SIZE * 0.5f)) / GRID_COUNT;
                     z =(( iz * GRID_PAD) + zeye) / GRID_COUNT;
 
-                    // translate to origin
+                    // translate to origin - for rotation
                     float xPrime = x - xp ;
                     float yPrime = y - yp ;
                     float zPrime = z - zp ;
 
-                    // performing rotation
+                    // performing rotation - for rotation
                     float newX = xPrime * cosf(DEG2RAD * angle) + zPrime * sinf(DEG2RAD * angle);
                     float newY = yPrime;
                     float newZ = -xPrime * sinf(DEG2RAD * angle) + zPrime * cosf(DEG2RAD * angle);
 
-                    // translate back to its position
+                    // translate back to its position - for rotation
                     x = newX + xp ;
                     y = newY + yp ;
                     z = newZ + zp ;
@@ -81,10 +85,17 @@ int main()
                     x *= width; 
                     y *= height;
 
-                    float rad = radius / z;
-                    rad *= RADIUS;
+                    // float rad = radius / z;
+                    // rad *= RADIUS;
+                    float inrad = _innerRadius / z;
+                    float outrad = _outerRadius / z;
+                    inrad *= innerRadius;
+                    outrad *= outerRadius;
 
-                    DrawCircle(x , y, rad, circleColorGradient);
+                    // DrawCircle(x , y, rad, circleColorGradient);
+                    DrawRing({x , y}, inrad, outrad, 0, 360, 10, circleColorGradient);
+                    DrawFPS(10,10);
+                    // DrawTriangle()
                 }
             }
         }
