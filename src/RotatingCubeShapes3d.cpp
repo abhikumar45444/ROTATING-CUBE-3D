@@ -47,6 +47,13 @@ typedef enum Shape
     TRIANGLE
 } Shape;
 
+typedef enum Rotation
+{
+    X_AXIS,
+    Y_AXIS,
+    Z_AXIS
+} Rotation;
+
 typedef struct Text{
     const char *str;
     int posX;
@@ -63,19 +70,29 @@ typedef struct CheckBox{
     Shape chBxshape;
 }CheckBox;
 
+typedef struct CheckBoxRot{
+    Rectangle chBxrect;
+    Text text;
+    Color chBxcolor;
+    bool chBxselected;
+    Rotation chBxRot;
+}CheckBoxRot;
+
 Font font;
 int fontSize = 25;
 float fontSpacing = 2.0f;
 
 void DrawCheckBoxShapes(CheckBox *checkBoxes, int size);
 void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size);
+void DrawCheckBoxRot(CheckBoxRot *checkBoxes, int size);
+void UserInputCheckBoxRot(CheckBoxRot *checkBoxes, int size);
 
 //! MENU 
 
 
 // * TODO: implement selection for different shapes - DONE ✓
 // * TODO: add custom font - DONE ✓
-// * TODO: implement selection for different Rotational plane - 
+// * TODO: implement selection for different Rotational plane - DONE ✓
 // * TODO: implement slider for zeye -
 // * TODO: implement slider for rotation speed -
 // * TODO: implement slider for circle and ring radius -
@@ -141,6 +158,7 @@ int main()
     float chBxInitX = 20.0f, chBxInitY = 50.0f, chBxWidth = 20.0f, chBxHeight = 20.0f, chBxYoffset = 30.0f;
     int chBxTextInitX = chBxInitX + 30.0f, chBxTextInitY = chBxInitY - 1.0f, /* fontSize = 15.0f, */ chBxTextYOffset = chBxYoffset;
 
+    // Shape Filling CheckBox
     CheckBox circleChBx = {
         {chBxInitX, chBxInitY, chBxWidth, chBxHeight},
         {"Circle", chBxTextInitX, chBxTextInitY, fontSize, RAYWHITE},
@@ -165,8 +183,47 @@ int main()
         TRIANGLE,
     };
 
+
+    // Rotation axis CheckBox
+    const char *xAxisChBxText = "X-Axis";
+    Vector2 xAxisChBxTextDimension = MeasureTextEx(font, xAxisChBxText, fontSize, fontSpacing);
+    float xAxisXOffset = 10.0f;
+
+    CheckBoxRot xAxisChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY, chBxWidth, chBxHeight},
+        {xAxisChBxText, (int)(width - xAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY, fontSize, RAYWHITE},
+        WHITE,
+        false,
+        X_AXIS
+    };
+
+    const char *yAxisChBxText = "Y-Axis";
+    Vector2 yAxisChBxTextDimension = MeasureTextEx(font, yAxisChBxText, fontSize, fontSpacing);
+
+    CheckBoxRot yAxisChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY + chBxYoffset, chBxWidth, chBxHeight},
+        {yAxisChBxText, (int)(width - yAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + chBxTextYOffset, fontSize, RAYWHITE},
+        RED,
+        true,
+        Y_AXIS
+    };
+
+    const char *zAxisChBxText = "Z-Axis";
+    Vector2 zAxisChBxTextDimension = MeasureTextEx(font, zAxisChBxText, fontSize, fontSpacing);
+
+    CheckBoxRot zAxisChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY + 2.0f * chBxYoffset, chBxWidth, chBxHeight},
+        {zAxisChBxText, (int)(width - zAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + 2 * chBxTextYOffset, fontSize, RAYWHITE},
+        WHITE,
+        false,
+        Z_AXIS
+    };
+
     CheckBox checkBoxes[] = {circleChBx, ringChBx, triangleChBx};
     unsigned int checkBoxesLength = sizeof(checkBoxes) / sizeof(CheckBox);
+
+    CheckBoxRot checkBoxesRot[] = {xAxisChBx, yAxisChBx, zAxisChBx};
+    unsigned int checkBoxesRotLength = sizeof(checkBoxesRot) / sizeof(CheckBoxRot);
     //! MENU INIT
 
     while(!WindowShouldClose())
@@ -188,104 +245,155 @@ int main()
             }
         }
 
+        UserInputCheckBoxRot(checkBoxesRot, checkBoxesRotLength);
+
+        Rotation selectedRot;
+
+        for (int i = 0; i < checkBoxesRotLength; i++)
+        {
+            if(checkBoxesRot[i].chBxselected)
+            {
+                selectedRot = checkBoxesRot[i].chBxRot;
+            }
+        }
+
         DrawTextEx(font, "Select Filling Shape Of Cube : ", {chBxInitX, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
         DrawCheckBoxShapes(checkBoxes, checkBoxesLength);
+
+        // Rotation axis text
+        const char *rotHeading = "Select Rotational Axis : ";
+        Vector2 rotHeadingWidth = MeasureTextEx(font, rotHeading, fontSize, fontSpacing);
+        DrawTextEx(font, rotHeading, {width - rotHeadingWidth.x - 10.0f, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
+        DrawCheckBoxRot(checkBoxesRot, checkBoxesRotLength);
         //! MENU
 
-            for (int i = 0; i < GRID_COUNT * GRID_COUNT * GRID_COUNT; i++)
+        for (int i = 0; i < GRID_COUNT * GRID_COUNT * GRID_COUNT; i++)
+        {
+            // translate to origin - for rotation
+            float xPrime = cube.points[i].x - xp;
+            float yPrime = cube.points[i].y - yp;
+            float zPrime = cube.points[i].z - zp;
+
+            float newX = 0.0f;
+            float newY = 0.0f;
+            float newZ = 0.0f;
+
+            switch(selectedRot)
             {
-                // translate to origin - for rotation
-                float xPrime = cube.points[i].x - xp;
-                float yPrime = cube.points[i].y - yp;
-                float zPrime = cube.points[i].z - zp;
-
-                // performing rotation - for rotation
-                float newX = xPrime * cosf(DEG2RAD * angle) + zPrime * sinf(DEG2RAD * angle);
-                float newY = yPrime;
-                float newZ = -xPrime * sinf(DEG2RAD * angle) + zPrime * cosf(DEG2RAD * angle);
-
-                // translate back to its position - for rotation
-                float x = newX + xp;
-                float y = newY + yp;
-                float z = newZ + zp;
-
-                // perspective divide
-                x = x / z;
-                y = y / z;
-
-                x = (x + 1) / 2;
-                y = (y + 1) / 2;
-
-                // scaling the cordinates back
-                x *= width;
-                y *= height;
-
-                switch (selectedShape)
+                case X_AXIS:
                 {
-                    case CIRCLE: 
-                    {
-                        Color circleColor = cube.points[i].color;
-
-                        float rad = cube.points[i].radius / z;
-                        rad *= cube.points[i].radius;
-                        DrawCircle(x , y, rad, circleColor);
-                        break;
-                    }
-
-                    case RING:
-                    {
-                        Color ringColor = cube.points[i].color;
-
-                        float _innerRadius = innerRadius;
-                        float _outerRadius = outerRadius;
-                        float inrad = _innerRadius / z;
-                        float outrad = _outerRadius / z;
-                        inrad *= _innerRadius;
-                        outrad *= _outerRadius;
-                        DrawRing({x , y},inrad, outrad, 0, 360, 10, ringColor);
-                        break;
-                    }
-
-                    case TRIANGLE:
-                    {
-                        Color triangColor = cube.points[i].color;
-
-                        Vector2 v1 = {};
-                        Vector2 v2 = {};
-                        Vector2 v3 = {};
-
-                        float triW = triWide / z;
-                        float triH = triHeight / z;
-        
-                        triW *= triWide;
-                        triH *= triHeight;
-
-                        v1.x = x;
-                        v1.y = y;
-
-                        v2.x = x - triW;
-                        v2.y = y + triH;
-
-                        v3.x = x + triW;
-                        v3.y = y + triH;
-
-                        DrawTriangleLines(v1, v2, v3, triangColor);
-                        break;
-                    }
-                    
-                
-                    default:
-                    {
-                        const char *defaultText = "SWITCH DEFAULT EXECUTED !! \n\t\t\tNO SHAPE DETECTED ..";
-                        int fontSize = 20;
-                        int defaultTextWidth = MeasureText(defaultText, fontSize);
-                        DrawTextEx(font, defaultText, {width*0.5f - defaultTextWidth * 0.5f,height*0.5f},fontSize, fontSpacing ,WHITE);
-                        break;
-                    }
+                    // performing rotation x-axis - for rotation
+                    newX = xPrime;
+                    newY = yPrime * cosf(DEG2RAD * angle) - zPrime * sinf(DEG2RAD * angle);
+                    newZ = yPrime * sinf(DEG2RAD * angle) + zPrime * cosf(DEG2RAD * angle);
+                    break;
                 }
 
-                DrawFPS(width-75, height-20);
+                case Y_AXIS:
+                {
+                    // performing rotation y-axis - for rotation
+                    newX = xPrime * cosf(DEG2RAD * angle) + zPrime * sinf(DEG2RAD * angle);
+                    newY = yPrime;
+                    newZ = -xPrime * sinf(DEG2RAD * angle) + zPrime * cosf(DEG2RAD * angle);
+                    break;
+                }
+
+                case Z_AXIS:
+                {
+                    // performing rotation z-axis - for rotation
+                    newX = xPrime * cosf(DEG2RAD * angle) - yPrime * sinf(DEG2RAD * angle);
+                    newY = xPrime * sinf(DEG2RAD * angle) + yPrime * cosf(DEG2RAD * angle);
+                    newZ = zPrime;
+                    break;
+                }
+
+                default:
+                {
+                    break;
+                }
             }
+
+            // translate back to its position - for rotation
+            float x = newX + xp;
+            float y = newY + yp;
+            float z = newZ + zp;
+
+            // perspective divide
+            x = x / z;
+            y = y / z;
+
+            x = (x + 1) / 2;
+            y = (y + 1) / 2;
+
+            // scaling the cordinates back
+            x *= width;
+            y *= height;
+
+            switch (selectedShape)
+            {
+                case CIRCLE:
+                {
+                    Color circleColor = cube.points[i].color;
+
+                    float rad = cube.points[i].radius / z;
+                    rad *= cube.points[i].radius;
+                    DrawCircle(x, y, rad, circleColor);
+                    break;
+                }
+
+                case RING:
+                {
+                    Color ringColor = cube.points[i].color;
+
+                    float _innerRadius = innerRadius;
+                    float _outerRadius = outerRadius;
+                    float inrad = _innerRadius / z;
+                    float outrad = _outerRadius / z;
+                    inrad *= _innerRadius;
+                    outrad *= _outerRadius;
+                    DrawRing({x, y}, inrad, outrad, 0, 360, 10, ringColor);
+                    break;
+                }
+
+                case TRIANGLE:
+                {
+                    Color triangColor = cube.points[i].color;
+
+                    Vector2 v1 = {};
+                    Vector2 v2 = {};
+                    Vector2 v3 = {};
+
+                    float triW = triWide / z;
+                    float triH = triHeight / z;
+
+                    triW *= triWide;
+                    triH *= triHeight;
+
+                    v1.x = x;
+                    v1.y = y;
+
+                    v2.x = x - triW;
+                    v2.y = y + triH;
+
+                    v3.x = x + triW;
+                    v3.y = y + triH;
+
+                    DrawTriangleLines(v1, v2, v3, triangColor);
+                    break;
+                }
+
+                default:
+                {
+                    const char *defaultText = "SWITCH DEFAULT EXECUTED !! \n\t\t\tNO SHAPE DETECTED ..";
+                    int fontSize = 20;
+                    int defaultTextWidth = MeasureText(defaultText, fontSize);
+                    DrawTextEx(font, defaultText, {width * 0.5f - defaultTextWidth * 0.5f, height * 0.5f}, fontSize, fontSpacing, WHITE);
+                    break;
+                }
+            }
+
+            DrawFPS(width - 75, height - 20);
+        }
         EndDrawing();
     }
 
@@ -309,6 +417,46 @@ void DrawCheckBoxShapes(CheckBox *checkBoxes, int size)
 
 
 void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size)
+{
+    Vector2 mousePos = GetMousePosition();
+
+    for (int i = 0; i < size; i++)
+    {
+        if ((mousePos.x >= checkBoxes[i].chBxrect.x && mousePos.x <= checkBoxes[i].chBxrect.x + checkBoxes[i].chBxrect.width) && (mousePos.y >= checkBoxes[i].chBxrect.y && mousePos.y <= checkBoxes[i].chBxrect.y + checkBoxes[i].chBxrect.height))
+        {
+            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+            {
+                checkBoxes[i].chBxcolor = RED;
+                checkBoxes[i].chBxselected = true;
+                for (int j = 0; j < size; j++)
+                {
+                    if((checkBoxes[j].chBxselected) && (i != j))
+                    {
+                        checkBoxes[j].chBxcolor = WHITE;
+                        checkBoxes[j].chBxselected = false;
+                    }
+                }
+            }
+        }
+    }
+    
+}
+
+
+void DrawCheckBoxRot(CheckBoxRot *checkBoxes, int size)
+{
+    float roundness = 0.5f;
+    float segments = 10.0f;
+    for (int i = 0; i < size; i++)
+    {
+        Rectangle rect1 = checkBoxes[i].chBxrect;
+        DrawRectangleRounded(rect1, roundness, segments, checkBoxes[i].chBxcolor);
+        DrawTextEx(font ,checkBoxes[i].text.str, {(float)checkBoxes[i].text.posX, (float)checkBoxes[i].text.posY}, checkBoxes[i].text.fontSize, fontSpacing,checkBoxes[i].text.textColor);
+    }
+}
+
+
+void UserInputCheckBoxRot(CheckBoxRot *checkBoxes, int size)
 {
     Vector2 mousePos = GetMousePosition();
 
