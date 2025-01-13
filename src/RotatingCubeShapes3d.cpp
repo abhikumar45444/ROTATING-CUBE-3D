@@ -42,6 +42,7 @@ typedef struct Cube{
 //! MENU 
 typedef enum Shape
 {
+    SHAPE_NONE,
     CIRCLE,
     RING,
     TRIANGLE
@@ -49,6 +50,7 @@ typedef enum Shape
 
 typedef enum Rotation
 {
+    ROTATION_NONE,
     X_AXIS,
     Y_AXIS,
     Z_AXIS
@@ -68,24 +70,15 @@ typedef struct CheckBox{
     Color chBxcolor;
     bool chBxselected;
     Shape chBxshape;
-}CheckBox;
-
-typedef struct CheckBoxRot{
-    Rectangle chBxrect;
-    Text text;
-    Color chBxcolor;
-    bool chBxselected;
     Rotation chBxRot;
-}CheckBoxRot;
+}CheckBox;
 
 Font font;
 int fontSize = 25;
 float fontSpacing = 2.0f;
 
-void DrawCheckBoxShapes(CheckBox *checkBoxes, int size);
-void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size);
-void DrawCheckBoxRot(CheckBoxRot *checkBoxes, int size);
-void UserInputCheckBoxRot(CheckBoxRot *checkBoxes, int size);
+void DrawCheckBox(CheckBox *checkBoxes, int size);
+void UserInputCheckBox(CheckBox *checkBoxes, int size);
 
 //! MENU 
 
@@ -165,6 +158,7 @@ int main()
         RED,
         true,
         CIRCLE,
+        ROTATION_NONE
     };
 
     CheckBox ringChBx = {
@@ -173,6 +167,7 @@ int main()
         WHITE,
         false,
         RING,
+        ROTATION_NONE
     };
 
     CheckBox triangleChBx = {
@@ -181,6 +176,7 @@ int main()
         WHITE,
         false,
         TRIANGLE,
+        ROTATION_NONE
     };
 
 
@@ -189,41 +185,44 @@ int main()
     Vector2 xAxisChBxTextDimension = MeasureTextEx(font, xAxisChBxText, fontSize, fontSpacing);
     float xAxisXOffset = 10.0f;
 
-    CheckBoxRot xAxisChBx = {
+    CheckBox xAxisChBx = {
         {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY, chBxWidth, chBxHeight},
         {xAxisChBxText, (int)(width - xAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY, fontSize, RAYWHITE},
         WHITE,
         false,
-        X_AXIS
+        SHAPE_NONE,
+        X_AXIS,
     };
 
     const char *yAxisChBxText = "Y-Axis";
     Vector2 yAxisChBxTextDimension = MeasureTextEx(font, yAxisChBxText, fontSize, fontSpacing);
 
-    CheckBoxRot yAxisChBx = {
+    CheckBox yAxisChBx = {
         {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY + chBxYoffset, chBxWidth, chBxHeight},
         {yAxisChBxText, (int)(width - yAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + chBxTextYOffset, fontSize, RAYWHITE},
         RED,
         true,
+        SHAPE_NONE,
         Y_AXIS
     };
 
     const char *zAxisChBxText = "Z-Axis";
     Vector2 zAxisChBxTextDimension = MeasureTextEx(font, zAxisChBxText, fontSize, fontSpacing);
 
-    CheckBoxRot zAxisChBx = {
+    CheckBox zAxisChBx = {
         {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, chBxInitY + 2.0f * chBxYoffset, chBxWidth, chBxHeight},
         {zAxisChBxText, (int)(width - zAxisChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + 2 * chBxTextYOffset, fontSize, RAYWHITE},
         WHITE,
         false,
+        SHAPE_NONE,
         Z_AXIS
     };
 
     CheckBox checkBoxes[] = {circleChBx, ringChBx, triangleChBx};
     unsigned int checkBoxesLength = sizeof(checkBoxes) / sizeof(CheckBox);
 
-    CheckBoxRot checkBoxesRot[] = {xAxisChBx, yAxisChBx, zAxisChBx};
-    unsigned int checkBoxesRotLength = sizeof(checkBoxesRot) / sizeof(CheckBoxRot);
+    CheckBox checkBoxesRot[] = {xAxisChBx, yAxisChBx, zAxisChBx};
+    unsigned int checkBoxesRotLength = sizeof(checkBoxesRot) / sizeof(CheckBox);
     //! MENU INIT
 
     while(!WindowShouldClose())
@@ -233,38 +232,33 @@ int main()
         ClearBackground(backgroundColor);
 
         //! MENU
-        UserInputCheckBoxShapes(checkBoxes, checkBoxesLength);
+        UserInputCheckBox(checkBoxes, checkBoxesLength);
+        UserInputCheckBox(checkBoxesRot, checkBoxesRotLength);
 
         Shape selectedShape;
+        Rotation selectedRot;
 
-        for (int i = 0; i < checkBoxesLength; i++)
+        for (int i = 0; i < checkBoxesLength || i < checkBoxesRotLength; i++)
         {
-            if(checkBoxes[i].chBxselected)
+            if(i < checkBoxesLength && checkBoxes[i].chBxselected)
             {
                 selectedShape = checkBoxes[i].chBxshape;
             }
-        }
 
-        UserInputCheckBoxRot(checkBoxesRot, checkBoxesRotLength);
-
-        Rotation selectedRot;
-
-        for (int i = 0; i < checkBoxesRotLength; i++)
-        {
-            if(checkBoxesRot[i].chBxselected)
+            if(i < checkBoxesRotLength && checkBoxesRot[i].chBxselected)
             {
                 selectedRot = checkBoxesRot[i].chBxRot;
             }
         }
 
         DrawTextEx(font, "Select Filling Shape Of Cube : ", {chBxInitX, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
-        DrawCheckBoxShapes(checkBoxes, checkBoxesLength);
+        DrawCheckBox(checkBoxes, checkBoxesLength);
 
         // Rotation axis text
         const char *rotHeading = "Select Rotational Axis : ";
         Vector2 rotHeadingWidth = MeasureTextEx(font, rotHeading, fontSize, fontSpacing);
         DrawTextEx(font, rotHeading, {width - rotHeadingWidth.x - 10.0f, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
-        DrawCheckBoxRot(checkBoxesRot, checkBoxesRotLength);
+        DrawCheckBox(checkBoxesRot, checkBoxesRotLength);
         //! MENU
 
         for (int i = 0; i < GRID_COUNT * GRID_COUNT * GRID_COUNT; i++)
@@ -403,7 +397,7 @@ int main()
 
 
 
-void DrawCheckBoxShapes(CheckBox *checkBoxes, int size)
+void DrawCheckBox(CheckBox *checkBoxes, int size)
 {
     float roundness = 0.5f;
     float segments = 10.0f;
@@ -416,7 +410,7 @@ void DrawCheckBoxShapes(CheckBox *checkBoxes, int size)
 }
 
 
-void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size)
+void UserInputCheckBox(CheckBox *checkBoxes, int size)
 {
     Vector2 mousePos = GetMousePosition();
 
@@ -439,45 +433,4 @@ void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size)
             }
         }
     }
-    
-}
-
-
-void DrawCheckBoxRot(CheckBoxRot *checkBoxes, int size)
-{
-    float roundness = 0.5f;
-    float segments = 10.0f;
-    for (int i = 0; i < size; i++)
-    {
-        Rectangle rect1 = checkBoxes[i].chBxrect;
-        DrawRectangleRounded(rect1, roundness, segments, checkBoxes[i].chBxcolor);
-        DrawTextEx(font ,checkBoxes[i].text.str, {(float)checkBoxes[i].text.posX, (float)checkBoxes[i].text.posY}, checkBoxes[i].text.fontSize, fontSpacing,checkBoxes[i].text.textColor);
-    }
-}
-
-
-void UserInputCheckBoxRot(CheckBoxRot *checkBoxes, int size)
-{
-    Vector2 mousePos = GetMousePosition();
-
-    for (int i = 0; i < size; i++)
-    {
-        if ((mousePos.x >= checkBoxes[i].chBxrect.x && mousePos.x <= checkBoxes[i].chBxrect.x + checkBoxes[i].chBxrect.width) && (mousePos.y >= checkBoxes[i].chBxrect.y && mousePos.y <= checkBoxes[i].chBxrect.y + checkBoxes[i].chBxrect.height))
-        {
-            if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-            {
-                checkBoxes[i].chBxcolor = RED;
-                checkBoxes[i].chBxselected = true;
-                for (int j = 0; j < size; j++)
-                {
-                    if((checkBoxes[j].chBxselected) && (i != j))
-                    {
-                        checkBoxes[j].chBxcolor = WHITE;
-                        checkBoxes[j].chBxselected = false;
-                    }
-                }
-            }
-        }
-    }
-    
 }
