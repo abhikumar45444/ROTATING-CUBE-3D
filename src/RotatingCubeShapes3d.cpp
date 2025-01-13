@@ -63,10 +63,23 @@ typedef struct CheckBox{
     Shape chBxshape;
 }CheckBox;
 
+Font font;
+int fontSize = 25;
+float fontSpacing = 2.0f;
+
 void DrawCheckBoxShapes(CheckBox *checkBoxes, int size);
 void UserInputCheckBoxShapes(CheckBox *checkBoxes, int size);
 
 //! MENU 
+
+
+// * TODO: implement selection for different shapes - DONE ✓
+// * TODO: add custom font - DONE ✓
+// * TODO: implement selection for different Rotational plane - 
+// * TODO: implement slider for zeye -
+// * TODO: implement slider for rotation speed -
+// * TODO: implement slider for circle and ring radius -
+// * TODO: implement slider for triangle height and span (width) -
 
 int main()
 {
@@ -74,6 +87,10 @@ int main()
     SetConfigFlags( FLAG_WINDOW_UNDECORATED );
     InitWindow(width, height, title);
     SetTargetFPS(60);
+
+    // Load the custom font
+    const char *fontName = "../resources/font/Poppins.otf";
+    font = LoadFontEx(fontName, fontSize, nullptr, 0);
 
     Cube cube = {};
 
@@ -122,7 +139,7 @@ int main()
 
     //! MENU INIT
     float chBxInitX = 20.0f, chBxInitY = 50.0f, chBxWidth = 20.0f, chBxHeight = 20.0f, chBxYoffset = 30.0f;
-    int chBxTextInitX = chBxInitX + 30.0f, chBxTextInitY = chBxInitY + 3.0f, fontSize = 15.0f, chBxTextYOffset = chBxYoffset;
+    int chBxTextInitX = chBxInitX + 30.0f, chBxTextInitY = chBxInitY - 1.0f, /* fontSize = 15.0f, */ chBxTextYOffset = chBxYoffset;
 
     CheckBox circleChBx = {
         {chBxInitX, chBxInitY, chBxWidth, chBxHeight},
@@ -171,14 +188,8 @@ int main()
             }
         }
 
-        DrawText("Select Filling Shape Of Cube : ", chBxInitX, chBxInitY * 0.5f, 15, RAYWHITE);
+        DrawTextEx(font, "Select Filling Shape Of Cube : ", {chBxInitX, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
         DrawCheckBoxShapes(checkBoxes, checkBoxesLength);
-
-        // * TODO: implement selection for different shapes - DONE ✓
-        // * TODO: implement slider for zeye -
-        // * TODO: implement slider for circle and ring radius -
-        // * TODO: implement slider for triangle height and span (width) -
-
         //! MENU
 
             for (int i = 0; i < GRID_COUNT * GRID_COUNT * GRID_COUNT; i++)
@@ -268,7 +279,7 @@ int main()
                         const char *defaultText = "SWITCH DEFAULT EXECUTED !! \n\t\t\tNO SHAPE DETECTED ..";
                         int fontSize = 20;
                         int defaultTextWidth = MeasureText(defaultText, fontSize);
-                        DrawText(defaultText, width*0.5f - defaultTextWidth * 0.5f,height*0.5f,fontSize,WHITE);
+                        DrawTextEx(font, defaultText, {width*0.5f - defaultTextWidth * 0.5f,height*0.5f},fontSize, fontSpacing ,WHITE);
                         break;
                     }
                 }
@@ -292,7 +303,7 @@ void DrawCheckBoxShapes(CheckBox *checkBoxes, int size)
     {
         Rectangle rect1 = checkBoxes[i].chBxrect;
         DrawRectangleRounded(rect1, roundness, segments, checkBoxes[i].chBxcolor);
-        DrawText(checkBoxes[i].text.str, checkBoxes[i].text.posX, checkBoxes[i].text.posY, checkBoxes[i].text.fontSize, checkBoxes[i].text.textColor);
+        DrawTextEx(font ,checkBoxes[i].text.str, {(float)checkBoxes[i].text.posX, (float)checkBoxes[i].text.posY}, checkBoxes[i].text.fontSize, fontSpacing,checkBoxes[i].text.textColor);
     }
 }
 

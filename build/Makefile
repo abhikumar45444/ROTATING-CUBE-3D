@@ -5,4 +5,4 @@ DESKTOP:
 	C:\mingw-64\mingw32\bin\g++ ../src/RotatingCubeShapes3d.cpp -g -o RotatingCubeShapes3d.exe -O3 -I../include/ -L../lib/ -lraylib -lopengl32 -lgdi32 -lwinmm && RotatingCubeShapes3d.exe
 
 WASM:
-	emcc ../wasm/main.cpp -o ../wasm/index.html -O3 -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -Os -I. -I C:/raylib/src -I C:/raylib/src/external -L. -L C:/raylib/src -s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --shell-file ../wasm/shell.html c:/raylib/src/web/libraylib.a -DPLATFORM_WEB -s EXPORTED_FUNCTIONS=["_free","_malloc","_main"] -s EXPORTED_RUNTIME_METHODS=ccall
+	emcc ../wasm/main.cpp -o ../wasm/index.html -O3 -Wall -std=c++17 -D_DEFAULT_SOURCE -Wno-missing-braces -Wunused-result -Os -I. -I C:/raylib/src -I C:/raylib/src/external -L. -L C:/raylib/src -s USE_GLFW=3 -s ASYNCIFY -s TOTAL_MEMORY=67108864 -s FORCE_FILESYSTEM=1 --preload-file ../resources --shell-file ../wasm/shell.html c:/raylib/src/web/libraylib.a -DPLATFORM_WEB -s EXPORTED_FUNCTIONS=["_free","_malloc","_main"] -s EXPORTED_RUNTIME_METHODS=ccall
