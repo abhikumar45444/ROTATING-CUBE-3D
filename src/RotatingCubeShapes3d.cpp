@@ -56,6 +56,13 @@ typedef enum Rotation
     Z_AXIS
 } Rotation;
 
+typedef enum AngleDir
+{
+    ANGLE_NONE,
+    CLOCKWISE,
+    ANTI_CLOCKWISE
+} AngleDir;
+
 typedef struct Text{
     const char *str;
     int posX;
@@ -71,6 +78,7 @@ typedef struct CheckBox{
     bool chBxselected;
     Shape chBxshape;
     Rotation chBxRot;
+    AngleDir chBxAngDir;
 }CheckBox;
 
 Font font;
@@ -86,6 +94,7 @@ void UserInputCheckBox(CheckBox *checkBoxes, int size);
 // * TODO: implement selection for different shapes - DONE ✓
 // * TODO: add custom font - DONE ✓
 // * TODO: implement selection for different Rotational plane - DONE ✓
+// * TODO: implement selection for Rotation Angle -> ClockWise or Anti-Clockwise - DONE ✓
 // * TODO: implement slider for zeye -
 // * TODO: implement slider for rotation speed -
 // * TODO: implement slider for circle and ring radius -
@@ -158,7 +167,8 @@ int main()
         RED,
         true,
         CIRCLE,
-        ROTATION_NONE
+        ROTATION_NONE,
+        ANGLE_NONE
     };
 
     CheckBox ringChBx = {
@@ -167,7 +177,8 @@ int main()
         WHITE,
         false,
         RING,
-        ROTATION_NONE
+        ROTATION_NONE,
+        ANGLE_NONE
     };
 
     CheckBox triangleChBx = {
@@ -176,7 +187,8 @@ int main()
         WHITE,
         false,
         TRIANGLE,
-        ROTATION_NONE
+        ROTATION_NONE,
+        ANGLE_NONE
     };
 
 
@@ -192,6 +204,7 @@ int main()
         false,
         SHAPE_NONE,
         X_AXIS,
+        ANGLE_NONE
     };
 
     const char *yAxisChBxText = "Y-Axis";
@@ -203,7 +216,8 @@ int main()
         RED,
         true,
         SHAPE_NONE,
-        Y_AXIS
+        Y_AXIS,
+        ANGLE_NONE
     };
 
     const char *zAxisChBxText = "Z-Axis";
@@ -215,7 +229,48 @@ int main()
         WHITE,
         false,
         SHAPE_NONE,
-        Z_AXIS
+        Z_AXIS,
+        ANGLE_NONE
+    };
+
+    // Angle Direction
+    const char *clockwiseChBxText = "+ve";
+    Vector2 clockwiseChBxTextDimension = MeasureTextEx(font, clockwiseChBxText, fontSize, fontSpacing);
+
+    CheckBox clockwiseChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, zAxisChBx.chBxrect.y + 3.0f * chBxYoffset, chBxWidth, chBxHeight},
+        {clockwiseChBxText, (int)(width - clockwiseChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + 5 * chBxTextYOffset, fontSize, RAYWHITE},
+        RED,
+        true,
+        SHAPE_NONE,
+        ROTATION_NONE,
+        CLOCKWISE
+    };
+
+    const char *antiClockwiseChBxText = "-ve";
+    Vector2 antiClockwiseChBxTextDimension = MeasureTextEx(font, antiClockwiseChBxText, fontSize, fontSpacing);
+
+    CheckBox antiClockwiseChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, zAxisChBx.chBxrect.y + 4.0f * chBxYoffset, chBxWidth, chBxHeight},
+        {antiClockwiseChBxText, (int)(width - antiClockwiseChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + 6 * chBxTextYOffset, fontSize, RAYWHITE},
+        WHITE,
+        false,
+        SHAPE_NONE,
+        ROTATION_NONE,
+        ANTI_CLOCKWISE
+    };
+
+    const char *angleDirNoneChBxText = "Stop";
+    Vector2 angleDirNoneChBxTextDimension = MeasureTextEx(font, angleDirNoneChBxText, fontSize, fontSpacing);
+
+    CheckBox angleDirNoneChBx = {
+        {width - xAxisChBxTextDimension.x - 2 * chBxInitX - chBxWidth * 0.5f, zAxisChBx.chBxrect.y + 5.0f * chBxYoffset, chBxWidth, chBxHeight},
+        {angleDirNoneChBxText, (int)(width - angleDirNoneChBxTextDimension.x - 2 * xAxisXOffset), chBxTextInitY + 7 * chBxTextYOffset, fontSize, RAYWHITE},
+        WHITE,
+        false,
+        SHAPE_NONE,
+        ROTATION_NONE,
+        ANGLE_NONE
     };
 
     CheckBox checkBoxes[] = {circleChBx, ringChBx, triangleChBx};
@@ -223,22 +278,26 @@ int main()
 
     CheckBox checkBoxesRot[] = {xAxisChBx, yAxisChBx, zAxisChBx};
     unsigned int checkBoxesRotLength = sizeof(checkBoxesRot) / sizeof(CheckBox);
+
+    CheckBox checkBoxesAngDir[] = {clockwiseChBx, antiClockwiseChBx, angleDirNoneChBx};
+    unsigned int checkBoxesAngDirLength = sizeof(checkBoxesAngDir) / sizeof(CheckBox);
     //! MENU INIT
 
     while(!WindowShouldClose())
     {
-        angle += 3 * PI * GetFrameTime();
         BeginDrawing();
         ClearBackground(backgroundColor);
 
         //! MENU
         UserInputCheckBox(checkBoxes, checkBoxesLength);
         UserInputCheckBox(checkBoxesRot, checkBoxesRotLength);
+        UserInputCheckBox(checkBoxesAngDir, checkBoxesAngDirLength);
 
         Shape selectedShape;
         Rotation selectedRot;
+        AngleDir selectedAngDir;
 
-        for (int i = 0; i < checkBoxesLength || i < checkBoxesRotLength; i++)
+        for (int i = 0; i < checkBoxesLength || i < checkBoxesRotLength || i < checkBoxesAngDirLength; i++)
         {
             if(i < checkBoxesLength && checkBoxes[i].chBxselected)
             {
@@ -248,6 +307,11 @@ int main()
             if(i < checkBoxesRotLength && checkBoxesRot[i].chBxselected)
             {
                 selectedRot = checkBoxesRot[i].chBxRot;
+            }
+
+            if(i < checkBoxesAngDirLength && checkBoxesAngDir[i].chBxselected)
+            {
+                selectedAngDir = checkBoxesAngDir[i].chBxAngDir;
             }
         }
 
@@ -259,7 +323,39 @@ int main()
         Vector2 rotHeadingWidth = MeasureTextEx(font, rotHeading, fontSize, fontSpacing);
         DrawTextEx(font, rotHeading, {width - rotHeadingWidth.x - 10.0f, chBxInitY * 0.40f}, fontSize, fontSpacing, WHITE);
         DrawCheckBox(checkBoxesRot, checkBoxesRotLength);
+
+        // Angle Direction Text
+        const char *angDirHeading = "Angle Direction : ";
+        Vector2 angDirHeadingWidth = MeasureTextEx(font, angDirHeading, fontSize, fontSpacing);
+        DrawTextEx(font, angDirHeading, {width - angDirHeadingWidth.x - 10.0f, zAxisChBx.chBxrect.y + 2.0f * chBxYoffset}, fontSize, fontSpacing, WHITE);
+        DrawCheckBox(checkBoxesAngDir, checkBoxesAngDirLength);
         //! MENU
+
+        switch(selectedAngDir)
+        {
+            case CLOCKWISE:
+            {
+                angle += 3 * PI * GetFrameTime();
+                break;
+            }
+
+            case ANTI_CLOCKWISE:
+            {
+                angle -= 3 * PI * GetFrameTime();
+                break;
+            }
+
+            case ANGLE_NONE:
+            {
+                const char *paused = "Rotation Is Paused !!";
+                Vector2 pausedDimension = MeasureTextEx(font, paused, fontSize, fontSpacing);
+                DrawTextEx(font, paused, {width * 0.5f - pausedDimension.x * 0.5f, height - pausedDimension.y - 5.0f}, fontSize, fontSpacing, RED);
+                break;
+            }
+
+            default:
+                break;
+        }
 
         for (int i = 0; i < GRID_COUNT * GRID_COUNT * GRID_COUNT; i++)
         {
