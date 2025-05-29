@@ -11,9 +11,7 @@ This project visualizes a 3D rotating cube represented by circles at its vertice
  ![thumbnail](./RotatingCube3d.PNG)
 
 ## ROTATING CUBE 3D PREVIEW
-
-https://github.com/user-attachments/assets/dff6568d-caf1-4a47-a7dc-a2cb5659393a
-
+![RotatingCube3d](https://github.com/user-attachments/assets/6fcdb0b9-6b9b-483d-ad61-44982a0b831e)
 
 ## DESCRIPTION
 - 3D to 2D Projection: Renders a 3D cube on a 2D canvas using simple perspective projection.
