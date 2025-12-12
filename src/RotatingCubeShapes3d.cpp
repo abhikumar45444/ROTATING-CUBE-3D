@@ -6,6 +6,8 @@ using namespace std;
 int width = 1000;
 int height = 800;
 
+float speed = 4.0f;
+
 #define GRID_COUNT 15
 #define GRID_PAD 30
 #define GRID_SIZE ((GRID_COUNT - 1) * GRID_PAD)
@@ -95,7 +97,7 @@ void UserInputCheckBox(CheckBox *checkBoxes, int size);
 // * TODO: add custom font - DONE ✓
 // * TODO: implement selection for different Rotational plane - DONE ✓
 // * TODO: implement selection for Rotation Angle -> ClockWise or Anti-Clockwise - DONE ✓
-// * TODO: implement slider for zeye -
+//   TODO: implement slider for zeye - WORKING 
 // * TODO: implement slider for rotation speed -
 // * TODO: implement slider for circle and ring radius -
 // * TODO: implement slider for triangle height and span (width) -
@@ -117,7 +119,7 @@ int main()
     float x = 0.0f;
     float y = 0.0f;
     float z = 0.0f;
-    float zeye = 320.0f;
+    float zeye = 340.0f;
 
     // point of rotation
     float xp = 0;
@@ -164,8 +166,8 @@ int main()
     CheckBox circleChBx = {
         {chBxInitX, chBxInitY, chBxWidth, chBxHeight},
         {"Circle", chBxTextInitX, chBxTextInitY, fontSize, RAYWHITE},
-        RED,
-        true,
+        WHITE,
+        false,
         CIRCLE,
         ROTATION_NONE,
         ANGLE_NONE
@@ -174,8 +176,8 @@ int main()
     CheckBox ringChBx = {
         {chBxInitX, chBxInitY + chBxYoffset, chBxWidth, chBxHeight},
         {"Ring", chBxTextInitX, chBxTextInitY + chBxTextYOffset, fontSize, RAYWHITE},
-        WHITE,
-        false,
+        RED,
+        true,
         RING,
         ROTATION_NONE,
         ANGLE_NONE
@@ -335,13 +337,13 @@ int main()
         {
             case CLOCKWISE:
             {
-                angle += 3 * PI * GetFrameTime();
+                angle += speed * PI * GetFrameTime();
                 break;
             }
 
             case ANTI_CLOCKWISE:
             {
-                angle -= 3 * PI * GetFrameTime();
+                angle -= speed * PI * GetFrameTime();
                 break;
             }
 
@@ -425,7 +427,7 @@ int main()
                 {
                     Color circleColor = cube.points[i].color;
 
-                    float rad = cube.points[i].radius / z;
+                    float rad = abs(cube.points[i].radius / z);
                     rad *= cube.points[i].radius;
                     DrawCircle(x, y, rad, circleColor);
                     break;
@@ -437,8 +439,8 @@ int main()
 
                     float _innerRadius = innerRadius;
                     float _outerRadius = outerRadius;
-                    float inrad = _innerRadius / z;
-                    float outrad = _outerRadius / z;
+                    float inrad = abs(_innerRadius / z);
+                    float outrad = abs(_outerRadius / z);
                     inrad *= _innerRadius;
                     outrad *= _outerRadius;
                     DrawRing({x, y}, inrad, outrad, 0, 360, 10, ringColor);

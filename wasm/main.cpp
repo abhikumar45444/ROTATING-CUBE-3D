@@ -11,6 +11,8 @@ using namespace std;
 int width = 1000;
 int height = 700;
 
+float speed = 4.0f;
+
 #define GRID_COUNT 15
 #define GRID_PAD 30
 #define GRID_SIZE ((GRID_COUNT - 1) * GRID_PAD)
@@ -176,8 +178,8 @@ void UpdateDrawFrame(void)
     static CheckBox circleChBx = {
         {chBxInitX, chBxInitY, chBxWidth, chBxHeight},
         {"Circle", chBxTextInitX, chBxTextInitY, fontSize, RAYWHITE},
-        RED,
-        true,
+        WHITE,
+        false,
         CIRCLE,
         ROTATION_NONE,
         ANGLE_NONE
@@ -186,8 +188,8 @@ void UpdateDrawFrame(void)
     static CheckBox ringChBx = {
         {chBxInitX, chBxInitY + chBxYoffset, chBxWidth, chBxHeight},
         {"Ring", chBxTextInitX, chBxTextInitY + chBxTextYOffset, fontSize, RAYWHITE},
-        WHITE,
-        false,
+        RED,
+        true,
         RING,
         ROTATION_NONE,
         ANGLE_NONE
@@ -344,13 +346,13 @@ void UpdateDrawFrame(void)
     {
         case CLOCKWISE:
         {
-            angle += 3 * PI * GetFrameTime();
+            angle += speed * PI * GetFrameTime();
             break;
         }
 
         case ANTI_CLOCKWISE:
         {
-            angle -= 3 * PI * GetFrameTime();
+            angle -= speed * PI * GetFrameTime();
             break;
         }
 
